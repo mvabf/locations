@@ -5,7 +5,9 @@ import unsplash from '../services/unsplashRequestService';
 
 class PlacesController {
     public async list(req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const places = await PlaceSchema.find();
+
+        return res.json(places);
     }
 
     public async store(req: Request, res: Response): Promise<Response> {
@@ -23,15 +25,24 @@ class PlacesController {
 
             const placeCreated = await PlaceSchema.create(place);
 
-            return res.json(placeCreated);
+            return res.status(201).json(placeCreated);
 
-        } catch(err) {
-            return res.json({error: err})
+        } catch(err: any) {
+            return res.json({error: err.message})
         }
     }
 
     public async find(req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { id } = req.params
+
+        try {
+          const place = await PlaceSchema.findById(id);
+
+          return res.json(place);
+
+        } catch (err: any) {
+            return res.status(404).json({ error: err.message });
+        }
     }
 
     public async update(req: Request, res: Response): Promise<Response> {
