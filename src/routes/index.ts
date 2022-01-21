@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import placesRouter from './places.routes';
+import userRouter from './user.routes';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    return res.json({message: 'hello from the api!'});
-});
+router.use('/users', userRouter);
+router.use('/places', placesRouter);
 
 export default router;
