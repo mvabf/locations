@@ -8,7 +8,7 @@ class PlacesController {
         const { page = 1, limit = 50, search, order='name' } = req.query;
 
         try {
-            const places = await PlaceSchema.find()
+            let places = await PlaceSchema.find()
                 .limit(<any>limit * 1)
                 .sort(order)
                 .skip((<any>page - 1) * <any>limit)
@@ -16,9 +16,9 @@ class PlacesController {
 
             const count = await PlaceSchema.countDocuments();
 
-            const listOfPlacesFilter = search ? places.filter(place => place.name.includes(search)) : places;
+            places = search ? places.filter(place => place.name.includes(search)) : places;
 
-            return res.json({ listOfPlacesFilter, totalPages: Math.ceil(count / <any>limit),currentPage: page });
+            return res.json({ places, totalPages: Math.ceil(count / <any>limit),currentPage: page });
             
         } catch (err: any) {
             return res.status(404).json(err.message);

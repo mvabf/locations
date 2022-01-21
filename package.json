@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --inspect --ignore-watch node_modules src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -outDir dist",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@types/express": "^4.17.13",
