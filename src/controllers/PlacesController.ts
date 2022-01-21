@@ -50,7 +50,16 @@ class PlacesController {
     }
 
     public async destroy(req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { id } = req.params;
+
+        try {
+            await PlaceSchema.findByIdAndDelete(id);
+            
+            return res.sendStatus(204);
+
+        } catch(err: any) {
+            return res.status(400).json({ error: err.message })
+        }
     }
 }
 
