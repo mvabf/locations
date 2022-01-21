@@ -46,7 +46,27 @@ class PlacesController {
     }
 
     public async update(req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { _id, name } = req.body;
+
+        try {
+            const response = await unsplash.get("photos/random", {
+                params: { query: name }
+            });
+
+            const placeToUpdate = {
+                name,
+                photo: response.data.urls.small
+            }
+
+            await PlaceSchema.findOneAndUpdate({_id}, placeToUpdate);
+
+            const place = await PlaceSchema.findById(_id);
+
+            return res.json(place);
+
+        } catch (err: any) {
+            return res.status(404).json({ error: err.message });
+        }
     }
 
     public async destroy(req: Request, res: Response): Promise<Response> {
@@ -54,7 +74,7 @@ class PlacesController {
 
         try {
             await PlaceSchema.findByIdAndDelete(id);
-            
+
             return res.sendStatus(204);
 
         } catch(err: any) {
