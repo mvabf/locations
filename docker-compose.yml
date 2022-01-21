@@ -10,3 +10,12 @@ services:
       MONGO_INITDB_DATABASE: tindinauth
       MONGO_INITDB_ROOT_USERNAME: tindinauth
       MONGO_INITDB_ROOT_PASSWORD: tindinauth
+ 
+  backend:
+    container_name: desafio-tindin-node
+    restart: always
+    build: '.'
+    depends_on: 
+      - db
+    ports:
+      - 3000:3000
