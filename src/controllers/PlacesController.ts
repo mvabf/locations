@@ -1,13 +1,28 @@
 import { Request, Response } from 'express';
 
 import PlaceSchema from '../Models/Place';
-import unsplash from '../services/unsplashRequestService';
+import unsplash from '../providers/unsplashRequestProvider';
 
 class PlacesController {
     public async list(req: Request, res: Response): Promise<Response> {
-        const places = await PlaceSchema.find();
+        const { page = 1, limit = 50, search, order='name' } = req.query;
 
-        return res.json(places);
+        try {
+            const places = await PlaceSchema.find()
+                .limit(<any>limit * 1)
+                .sort(order)
+                .skip((<any>page - 1) * <any>limit)
+                .exec();
+
+            const count = await PlaceSchema.countDocuments();
+
+            const listOfPlacesFilter = search ? places.filter(place => place.name.includes(search)) : places;
+
+            return res.json({ listOfPlacesFilter, totalPages: Math.ceil(count / <any>limit),currentPage: page });
+            
+        } catch (err: any) {
+            return res.status(404).json(err.message);
+        }
     }
 
     public async store(req: Request, res: Response): Promise<Response> {
