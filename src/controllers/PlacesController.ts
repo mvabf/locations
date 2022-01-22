@@ -18,7 +18,7 @@ class PlacesController {
 
             places = search ? places.filter(place => place.name.includes(search)) : places;
 
-            return res.json({ places, totalPages: Math.ceil(count / <any>limit),currentPage: page });
+            return res.json({ places, totalPages: Math.ceil(count / <any>limit), currentPage: page });
             
         } catch (err: any) {
             return res.status(404).json(err.message);
@@ -29,13 +29,13 @@ class PlacesController {
         const { name } = req.body;
 
         try {
-            const response = await unsplash.get("photos/random", {
-                params: { query: name }
+            const response = await unsplash.get("search/photos", {
+                params: { query: name, page: 1, per_page: 1, order_by: 'relevant' }
             });
 
             const place = {
                 name,
-                photo: response.data.urls.small
+                photo: response.data.results[0].urls.small
             }
 
             const placeCreated = await PlaceSchema.create(place);
@@ -64,16 +64,16 @@ class PlacesController {
         const { _id, name } = req.body;
 
         try {
-            const response = await unsplash.get("photos/random", {
-                params: { query: name }
+            const response = await unsplash.get("search/photos", {
+                params: { query: name, page: 1, per_page: 1, order_by: 'relevant' }
             });
 
             const placeToUpdate = {
                 name,
-                photo: response.data.urls.small
+                photo: response.data.results[0].urls.small
             }
 
-            await PlaceSchema.findOneAndUpdate({_id}, placeToUpdate);
+            await PlaceSchema.findByIdAndUpdate({ _id }, placeToUpdate);
 
             const place = await PlaceSchema.findById(_id);
 

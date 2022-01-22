@@ -16,7 +16,7 @@ let token = '';
 
 beforeAll((done) => {
     supertest(server)
-        .post('/users/login')
+        .post('/login')
         .send({
             email: 'test@tindin.com',
             password: 'testpassword',
@@ -29,7 +29,7 @@ beforeAll((done) => {
 
 
 describe('List places with auth', () => {
-    test.only('should respond with a 200 status code', async () => {
+    it('should respond with a 200 status code', async () => {
         const response = await supertest(server)
             .get('/places')
             .set({ 'token': token, Accept: 'application/json' });

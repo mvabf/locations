@@ -12,7 +12,7 @@ class UsersController {
         if (!userToFind)
             return res.status(401).json({ message: 'user does not exists!' });
 
-        const isValidPassword = userToFind.password === password ? true : false;
+        const isValidPassword = userToFind.password === password;
 
         if (!isValidPassword)
             return res.status(401).json({ message: 'wrong password!' });
