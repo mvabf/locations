@@ -18,7 +18,7 @@ class PlacesController {
 
             places = search ? places.filter(place => place.name.includes(search)) : places;
 
-            return res.json({ places, totalPages: Math.ceil(count / <any>limit), currentPage: page });
+            return res.json({ places, totalPages: Math.ceil(count / <any>limit), page: page });
             
         } catch (err: any) {
             return res.status(404).json(err.message);
@@ -88,9 +88,9 @@ class PlacesController {
         const { id } = req.params;
 
         try {
-            await PlaceSchema.findByIdAndDelete(id);
+            const deletedPlace = await PlaceSchema.findByIdAndDelete(id);
 
-            return res.sendStatus(204);
+            return res.json(deletedPlace);
 
         } catch(err: any) {
             return res.status(400).json({ error: err.message })
